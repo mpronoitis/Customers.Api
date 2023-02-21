@@ -5,6 +5,7 @@ using Customers.Api.Repository;
 using Customers.Api.Service;
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using IocIdentity;
 using NJsonSchema.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,8 @@ builder.Services.AddSingleton<IDbConnectionFactory>(_ =>
 builder.Services.AddSingleton<DatabaseInitializer>();
 builder.Services.AddSingleton<ICustomerService, CustomerService>();
 builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
+
+builder.Services.AddApiConfig(config);
 
 var app = builder.Build();
 app.UseMiddleware<ValidationExceptionMiddleware>();
@@ -37,6 +40,9 @@ app.UseFastEndpoints(x =>
 });
 app.UseOpenApi();
 app.UseSwaggerUi3(s => s.ConfigureDefaults());
+
+app.UseAuthentication();
+app.UseAuthorization();
 //take DatabaseInitializer service from container
 var databaseInitializer = app.Services.GetRequiredService<DatabaseInitializer>();
 await databaseInitializer.InitializeAsync();

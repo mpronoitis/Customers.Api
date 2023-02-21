@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Customers.Api.Endpoints;
 
-[HttpGet("customers"),AllowAnonymous]
+[HttpGet("customers"),Authorize]
 public class GetAllCustomersEndpoint : EndpointWithoutRequest<GetAllCustomersResponse>
 {
     
